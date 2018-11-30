@@ -1,0 +1,105 @@
+{% extends 'layouts/app.html' %}
+
+{% block content %}
+
+    <div class="container-wrap" style="margin-top: 0">
+
+        <div class="lefter">
+            <div class="inner-lefter">
+
+                <div class="acc-info-wrap">
+                    <div class="acc-info-bg">
+                        <!-- PROFILE-COVER -->
+                        <img src="{{ user.profile_cover.url }}"/>
+                    </div>
+                    <div class="acc-info-img">
+                        <!-- PROFILE-IMAGE -->
+                        <img src="{{ user.profile_picture.url }}"/>
+                    </div>
+                    <div class="acc-info-name">
+                        <h3>{{ user.username }}</h3>
+                        <span>
+                            <a href="PROFILE-LINK">@ {{ user.username }}</a>
+                        </span>
+                    </div>
+                </div><!--Acc info wrap end-->
+
+                <div class="option-box">
+                    <ul>
+                        <li>
+                            <a href="/settings/account"
+                               class="{% if request.path == '/settings/account' %} bold {% endif %}">
+                                <div>
+                                    Account
+                                    <span><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/settings/password"
+                               class="{% if request.path == '/settings/password' %} bold {% endif %}">
+                                <div>
+                                    Password
+                                    <span><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="righter">
+            <div class="inner-righter">
+                <div class="acc">
+                    <div class="acc-heading">
+                        <h2>Account</h2>
+                        <h3>Change your basic account settings.</h3>
+                    </div>
+                    <div class="acc-content">
+                        <form method="POST" action="">
+                            {% csrf_token %}
+
+                            <div class="acc-wrap">
+                                <div class="acc-left">
+                                    Email
+                                </div>
+                                <div class="acc-right">
+                                    <input type="text" name="email" value="{{ user.email }}"/>
+                                    <span>
+                                    <!-- Email Error -->
+                                </span>
+                                </div>
+                            </div>
+                            <div class="acc-wrap">
+                                <div class="acc-left">
+                                </div>
+                                <div class="acc-right">
+                                    <input type="Submit" name="submit" value="Save changes"/>
+                                </div>
+                                <div class="settings-error">
+                                    <!-- Fields Error -->
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="content-setting">
+                    <div class="content-heading">
+
+                    </div>
+                    <div class="content-content">
+                        <div class="content-left">
+
+                        </div>
+                        <div class="content-right">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,224 @@
+<!--Profile cover-->
+{% load follow %}
+<div class="profile-cover-wrap">
+    <div class="profile-cover-inner">
+        <div class="profile-cover-img">
+            <!-- PROFILE-COVER -->
+            <img src="{{ user.profile_cover.url }}" id="profile_cover"/>
+
+            <div class="img-upload-button-wrap">
+                <div class="img-upload-button1">
+                    <label for="cover-upload-btn">
+                        <i class="fa fa-camera" aria-hidden="true"></i>
+                    </label>
+                    <span class="span-text1">
+                            Change your cover photo
+                        </span>
+                    <input id="cover-upload-btn" type="checkbox"/>
+                    <div class="img-upload-menu1">
+                        <span class="img-upload-arrow"></span>
+                        <form method="post" action="{% url 'accounts:upload_cover' %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <ul>
+                                <li>
+                                    <label for="profileCover">
+                                        Choose photo
+                                    </label>
+                                    <input type="file" name="profileCover" id="profileCover"/>
+                                </li>
+                                <li>
+                                    <input type="submit" value="Upload">
+                                    {#                                    <input type="reset" id="reset" value="Cancel">#}
+                                    {#                                    <label type="reset" for="reset">#}
+                                    {#                                        Cancel#}
+                                    {#                                    </label>#}
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="profile-nav">
+        <div class="profile-navigation">
+            <ul style="margin-left: 20%;">
+                <li>
+                    <a href="#">
+                        <div class="n-head">
+                            TWEETS
+                        </div>
+                        <div class="n-bottom">
+                            {{ user.tweet_set.all.count }}
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <div class="n-head">
+                            FOLLOWINGS
+                        </div>
+                        <div class="n-bottom">
+                            {% following request.user as total_following %}
+                            {{ total_following }}
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <div class="n-head">
+                            FOLLOWERS
+                        </div>
+                        <div class="n-bottom">
+                            {% follower request.user as total_followers %}
+                            {{ total_followers }}
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <div class="n-head">
+                            LIKES
+                        </div>
+                        <div class="n-bottom">
+                            65
+                        </div>
+                    </a>
+                </li>
+            </ul>
+            <div class="edit-button">
+                <span>
+                    <button class="f-btn" type="button" value="Cancel">Cancel</button>
+                </span>
+                <span>
+                    <input type="submit" id="save" value="Save Changes">
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Profile Cover End-->
+
+<div class="in-wrapper">
+    <div class="in-full-wrap">
+        <div class="in-left">
+            <div class="in-left-wrap">
+                <!--PROFILE INFO WRAPPER END-->
+                <div class="profile-info-wrap">
+                    <div class="profile-info-inner">
+                        <div class="profile-img">
+                            <!-- PROFILE-IMAGE -->
+                            <img src="{{ user.profile_picture.url }}" id="profile_picture"/>
+                            <div class="img-upload-button-wrap1">
+                                <div class="img-upload-button">
+                                    <label for="img-upload-btn">
+                                        <i class="fa fa-camera" aria-hidden="true"></i>
+                                    </label>
+                                    <span class="span-text">
+                                            Change your profile photo
+                                    </span>
+                                    <input id="img-upload-btn" type="checkbox"/>
+                                    <div class="img-upload-menu">
+                                        <span class="img-upload-arrow"></span>
+                                        <form method="post" action="{% url 'accounts:upload_profile' %}"
+                                              enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <ul>
+                                                <li>
+                                                    <label for="profileImage">
+                                                        Choose photo
+                                                    </label>
+                                                    <input id="profileImage" type="file" name="profileImage"/>
+                                                </li>
+                                                <li><a href="#">Remove</a></li>
+                                                <li>
+                                                    <input type="submit" value="Upload">
+                                                </li>
+                                            </ul>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!-- img upload end-->
+                            </div>
+                        </div>
+
+                        <form action="" id="editForm" method="post" enctype="multipart/Form-data">
+                            <div class="profile-name-wrap">
+                                <!-- <ul>
+                                      <li class="error-li">
+                                          <div class="span-pe-error"></div>
+                                     </li>
+                                 </ul>  -->
+                                {#                                <div class="profile-name">#}
+                                {#                                    <input type="text" name="username"/>#}
+                                {#                                </div>#}
+                                <div class="profile-tname">
+                                    <span>@</span>{{ user.username }}
+                                </div>
+                            </div>
+                            <div class="profile-bio-wrap">
+                                <div class="profile-bio-inner">
+                                    <textarea class="status" id="bio" name="bio"
+                                              placeholder="Bio...">{{ user.bio }}</textarea>
+                                </div>
+                            </div>
+                            <div class="profile-extra-info">
+                                <div class="profile-extra-inner">
+                                    <ul>
+                                        <li>
+                                            <div class="profile-ex-location">
+                                                <input
+                                                        style="margin-left: -40px"
+                                                        id="country"
+                                                        type="text"
+                                                        name="country"
+                                                        value="{{ user.country }}"
+                                                        placeholder="Country"/>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="profile-ex-location">
+                                                <input
+                                                        style="margin-left: -40px; margin-top: 10px"
+                                                        type="text"
+                                                        id="website"
+                                                        name="website"
+                                                        value="{{ user.website }}"
+                                                        placeholder="Website"/>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="profile-extra-footer">
+                    <div class="profile-extra-footer-head">
+                        <div class="profile-extra-info">
+                            <ul>
+                                <li style="margin-left: -40px; margin-top: -150px;">
+                                    <div class="profile-ex-location-i">
+                                        <i class="fa fa-camera" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="profile-ex-location">
+                                        <a href="#">0 Photos and videos </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="profile-extra-footer-body">
+                        <ul>
+                            <!-- <li><img src="#"></li> -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--PROFILE INFO INNER END-->
+        </div>
+        <!--PROFILE INFO WRAPPER END-->
+    </div>
+    <!-- in left wrap-->
+</div>
+<!-- in left end-->

@@ -1,0 +1,138 @@
+{% load is_liked %}
+<div class="all-tweet">
+    <div class="t-show-wrap">
+        <div class="t-show-inner">
+            <!-- this div is for retweet icon
+                <div class="t-show-banner">
+                    <div class="t-show-banner-inner">
+                        <span><i class="fa fa-retweet" aria-hidden="true"></i></span><span>Screen-Name Retweeted</span>
+                    </div>
+                </div>
+            -->
+            <div class="t-show-popup">
+                <div class="t-show-head">
+                    <div class="t-show-img">
+                        <img src="{{ tweet.user.profile_picture.url }}"/>
+                    </div>
+                    <div class="t-s-head-content">
+                        <div class="t-h-c-name">
+                            <span>
+                                <a href="#">{{ tweet.user.username }}</a>
+                            </span>
+                            <span>@{{ tweet.user.username }}</span>
+                            <span>{{ tweet.created_at }}</span>
+                        </div>
+                        <div class="t-h-c-dis">
+                            {{ tweet.tweet }}
+                        </div>
+                    </div>
+                </div>
+                <!--tweet show head end-->
+
+                {% if tweet.image %}
+                    <div class="t-show-body">
+                        <div class="t-s-b-inner">
+                            <div class="t-s-b-inner-in">
+                                <img src="{{ tweet.image.url }}" class="imagePopup"/>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="t-show-footer">
+                <div class="t-s-f-right">
+                    <ul>
+                        <li>
+                            <button>
+                                <a href="#">
+                                    <i class="fa fa-share" aria-hidden="true"></i>
+                                </a>
+                            </button>
+                        </li>
+                        <li>
+                            {% is_retweeted request.user tweet as retweeted %}
+                            <button class="retweet" data-tweet-id="{{ tweet.id }}">
+                                <a href="#">
+                                    <i class="fa fa-retweet" {% if retweeted %}style="color: #1de079" {% endif %} aria-hidden="true"></i>
+                                </a>
+                            </button>
+                        </li>
+                        <li>
+                            {% is_liked request.user tweet as liked %}
+                            {% if liked %}
+                                <button class="unlike-btn" data-tweet-id="{{ tweet.id }}">
+                                    <i class="fa fa-heart" aria-hidden="true">
+                                        <span class="likesCounter">{{ tweet.liked_tweet.all.count }}</span>
+                                    </i>
+                                </button>
+                            {% else %}
+                                <button class="like-btn" data-tweet-id="{{ tweet.id }}">
+                                    <i class="fa fa-heart-o" aria-hidden="true">
+                                        <span class="likesCounter">{{ tweet.liked_tweet.all.count }}</span>
+                                    </i>
+                                </button>
+                            {% endif %}
+                        </li>
+                        <li>
+                            <a href="#" class="more">
+                                <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                            </a>
+                            <ul>
+                                <li><label class="deleteTweet">Delete Tweet</label></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="retweet-popup modal" role="dialog" id="modal_{{ tweet.id }}">
+                <div class="wrap5">
+                    <div class="retweet-popup-body-wrap">
+                        <div class="retweet-popup-heading">
+                            <h3>Retweet this to followers?</h3>
+                            <span>
+                                <button class="close-retweet-popup" data-dismiss="modal">
+                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                </button>
+                            </span>
+                        </div>
+                        <form method="post" action="{% url 'twitty:retweet' %}">
+                            {% csrf_token %}
+                            <div class="retweet-popup-input">
+                                <div class="retweet-popup-input-inner">
+                                    <input type="hidden" name="tweet_id" value="{{ tweet.id }}">
+                                    <input type="text" name="retweet" class="retweetMsg" placeholder="Add a comment.."/>
+                                </div>
+                            </div>
+                            <div class="retweet-popup-inner-body">
+                                <div class="retweet-popup-inner-body-inner">
+                                    <div class="retweet-popup-comment-wrap">
+                                        <div class="retweet-popup-comment-head">
+                                            <img src="{{ tweet.user.profile_picture.url }}"/>
+                                        </div>
+                                        <div class="retweet-popup-comment-right-wrap">
+                                            <div class="retweet-popup-comment-headline">
+                                                <a>{{ tweet.user.username }} </a>
+                                                <span>{{ tweet.user.username }}</span>
+                                            </div>
+                                            <hr>
+                                            <div class="retweet-popup-comment-body">
+                                                {{ tweet.tweet }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="retweet-popup-footer">
+                                <div class="retweet-popup-footer-right">
+                                    <button class="retweet-it" type="submit">
+                                        <i class="fa fa-retweet" aria-hidden="true"></i>Retweet
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

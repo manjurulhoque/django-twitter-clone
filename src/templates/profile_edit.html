@@ -1,0 +1,86 @@
+{% extends 'layouts/app.html' %}
+
+{% block content %}
+
+    {% include 'partials/user-profile.html' with user=request.user %}
+
+    <div class="in-center">
+        <div class="in-center-wrap">
+            <!-- HERE WILL BE TWEETS -->
+
+        </div>
+        <!-- in left wrap-->
+        <div class="popupTweet"></div>
+
+    </div>
+    <!-- in center end -->
+
+    <div class="in-right">
+        <div class="in-right-wrap">
+            <!--==WHO TO FOLLOW==-->
+
+            <!--==WHO TO FOLLOW==-->
+
+            <!--==TRENDS==-->
+            <!-- HERE -->
+            <!--==TRENDS==-->
+        </div>
+        <!-- in left wrap-->
+    </div>
+    <!-- in right end -->
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        $(document).ready(function () {
+            // handle cover image
+            let imageLoader = document.getElementById('profileCover');
+            imageLoader.addEventListener('change', handleImage, false);
+
+            function handleImage(e) {
+                let reader = new FileReader();
+                reader.onload = function (event) {
+
+                    $('#profile_cover').attr('src', event.target.result);
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+
+            let profileImageLoader = document.getElementById('profileImage');
+            profileImageLoader.addEventListener('change', handleProfileImage, false);
+
+            function handleProfileImage(e) {
+                let reader = new FileReader();
+                reader.onload = function (event) {
+
+                    $('#profile_picture').attr('src', event.target.result);
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+
+            $('#save').click(function () {
+                let bio = document.getElementById('bio').value;
+                let country = document.getElementById('country').value;
+                let website = document.getElementById('website').value;
+                $.ajax({
+                    url: '/profile/edit',
+                    data: {
+                        bio: bio,
+                        country: country,
+                        website: website,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    method: 'POST',
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data);
+                        if (data.success) {
+                            alert("Profile is updated!");
+                        }
+                    }
+                });
+            })
+        })
+    </script>
+{% endblock %}

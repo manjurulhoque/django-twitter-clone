@@ -1,0 +1,213 @@
+{% extends 'layouts/app.html' %}
+
+{% block content %}
+
+    {% load staticfiles %}
+    {% load follow %}
+
+    <!---Inner wrapper-->
+    <div class="inner-wrapper">
+        <div class="in-wrapper">
+            <div class="in-full-wrap">
+                <div class="in-left">
+                    <div class="in-left-wrap">
+                        <div class="info-box">
+                            <div class="info-inner">
+                                <div class="info-in-head">
+                                    <!-- PROFILE-COVER-IMAGE -->
+                                    <img src="{{ request.user.profile_cover.url }}"/>
+                                </div>
+                                <div class="info-in-body">
+                                    <div class="in-b-box">
+                                        <div class="in-b-img">
+                                            <!-- PROFILE-IMAGE -->
+                                            <img src="{{ request.user.profile_picture.url }}"/>
+                                        </div>
+                                    </div>
+                                    <div class="info-body-name">
+                                        <div class="in-b-name">
+                                            <div>
+                                                <a href="">{{ request.user.username }}</a>
+                                            </div>
+                                            <span>
+                                            <small>
+                                                <a href="">@{{ request.user.username }}</a>
+                                            </small>
+                                        </span>
+                                        </div><!-- in b name end-->
+                                    </div><!-- info body name end-->
+                                </div><!-- info in body end-->
+                                <div class="info-in-footer">
+                                    <div class="number-wrapper">
+                                        <div class="num-box">
+                                            <div class="num-head">
+                                                TWEETS
+                                            </div>
+                                            <div class="num-body">
+                                                {{ request.user.tweet_set.all.count }}
+                                            </div>
+                                        </div>
+                                        <div class="num-box">
+                                            <div class="num-head">
+                                                FOLLOWING
+                                            </div>
+                                            <div class="num-body">
+                                                {% following request.user as total_following %}
+                                                <span class="count-following">{{ total_following }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="num-box">
+                                            <div class="num-head">
+                                                FOLLOWERS
+                                            </div>
+                                            <div class="num-body">
+                                                {% follower request.user as total_followers %}
+                                                <span class="count-followers">{{ total_followers }}</span>
+                                            </div>
+                                        </div>
+                                    </div><!-- mumber wrapper-->
+                                </div><!-- info in footer -->
+                            </div><!-- info inner end -->
+                        </div><!-- info box end-->
+
+                        <!--==TRENDS==-->
+                        <!---TRENDS HERE-->
+                        <!--==TRENDS==-->
+
+                    </div><!-- in left wrap-->
+                </div><!-- in left end-->
+                <div class="in-center">
+                    <div class="in-center-wrap">
+
+                        {% include 'partials/create-tweet.html' %}
+
+                        <!--Tweet SHOW WRAPPER-->
+                        <div class="tweets">
+                            {% for tweet in tweets %}
+                                {% include 'partials/all-tweets.html' with tweet=tweet %}
+                            {% endfor %}
+                        </div>
+                        <!--TWEETS SHOW WRAPPER-->
+
+                        <div class="loading-div">
+                            <img id="loader" src="" style="display: none;"/>
+                        </div>
+                        <div class="popupTweet"></div>
+
+                    </div><!-- in left wrap-->
+                </div><!-- in center end -->
+
+                <div class="in-right">
+                    <div class="in-right-wrap text-center">
+
+                        <div class="follow-title"><h3>Who to follow</h3></div>
+                        {% if users %}
+                            {% for user in users %}
+                                <div class="follow-wrap">
+                                    <div class="follow-inner">
+
+                                        <div class="follow-body">
+                                            <div class="follow-img">
+                                                <img src="{{ user.profile_picture.url }}"/>
+                                            </div>
+                                            <div class="follow-content">
+                                                <div class="fo-co-head">
+                                                    <a href="">{{ user.username }}</a><span> @{{ user.username }}</span>
+                                                </div>
+                                                <div class="edit-button">
+                                                    <span>
+                                                        <button class="f-btn follow-btn"
+                                                                data-follow="{{ user.id }}">
+                                                            <i class="fa fa-user-plus" id="follow"></i> Follow
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>No one to follow!</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        $(document).ready(function () {
+
+            $('.retweet').click(function () {
+                let tweet_id = $(this).data('tweet-id');
+                $('#modal_' + tweet_id).modal('show');
+            });
+
+            $('.f-btn').click(function () {
+                let follow = $(this).data('follow');
+                $.ajax({
+                    url: '/follow',
+                    data: {
+                        'follow': follow
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.success) {
+                            alert("You are following the user!");
+                        }
+                    }
+                });
+            });
+
+            $('.unlike-btn').click(function () {
+                let tweet_id = $(this).data('tweet-id');
+                let total_like = Number($(this).find('.likesCounter').text());
+                $.ajax({
+                    url: '/dislike',
+                    data: {
+                        tweet_id: tweet_id,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    method: 'POST',
+                    dataType: 'json',
+                    context: this, // this is not working in ajax that's why we need context
+                    success: function (data) {
+                        if (data.success) {
+                            $(this).find('.likesCounter').text(total_like - 1);
+                            $(this).removeClass('unlike-btn').addClass('like-btn');
+                            $(this).find('.fa').removeClass('fa-heart').addClass('fa-heart-o');
+                            alert("you disliked the tweet!");
+                        }
+                    }
+                });
+            });
+
+            $('.like-btn').click(function () {
+                let tweet_id = $(this).data('tweet-id');
+                let total_like = Number($(this).find('.likesCounter').text());
+                $.ajax({
+                    url: '/like',
+                    data: {
+                        tweet_id: tweet_id,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    method: 'POST',
+                    dataType: 'json',
+                    context: this, // this is not working in ajax that's why we need context
+                    success: function (data) {
+                        if (data.success) {
+                            $(this).find('.likesCounter').text(total_like + 1);
+                            $(this).removeClass('like-btn').addClass('unlike-btn');
+                            $(this).find('.fa').removeClass('fa-heart-o').addClass('fa-heart');
+                            alert("you liked the tweet!");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

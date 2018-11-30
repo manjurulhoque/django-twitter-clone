@@ -1,0 +1,41 @@
+<div class="tweet-wrap">
+    <div class="tweet-inner">
+        <div class="tweet-h-left">
+            <div class="tweet-h-img">
+                <!-- PROFILE-IMAGE -->
+                <img src="{{ request.user.profile_picture.url }}"/>
+            </div>
+        </div>
+        <form action="{% url 'twitty:create' %}" method="post">
+            {% csrf_token %}
+            <div class="tweet-body">
+                <textarea
+                        class="status"
+                        name="tweet"
+                        placeholder="Type Something here!"
+                        rows="4" cols="50"></textarea>
+                <!--<div class="hash-box">-->
+                <!--<ul>-->
+                <!--</ul>-->
+                <!--</div>-->
+            </div>
+            <div class="tweet-footer">
+                <div class="t-fo-left">
+                    <ul>
+                        <input type="file" name="file" id="file"/>
+                        <li style="list-style-type: none;">
+                            <label for="file">
+                                <i class="fa fa-camera" aria-hidden="true"></i>
+                            </label>
+                            <span class="tweet-error"></span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="t-fo-right">
+                    <span id="count">140</span>
+                    <input type="submit" value="Tweet"/>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

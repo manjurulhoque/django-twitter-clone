@@ -1,0 +1,255 @@
+{% extends 'layouts/app.html' %}
+
+{% block content %}
+
+    {% load follow %}
+
+    <!--Profile cover-->
+    <div class="profile-cover-wrap">
+        <div class="profile-cover-inner">
+            <div class="profile-cover-img">
+                <!-- PROFILE-COVER -->
+                <img src="{{ user.profile_cover.url }}"/>
+            </div>
+        </div>
+        <div class="profile-nav">
+            <div class="profile-navigation">
+                <ul style="margin-left: 20%;">
+                    <li>
+                        <div class="n-head">
+                            <a href="">TWEETS</a>
+                        </div>
+                        <div class="n-bottom">
+                            {{ user.tweet_set.all.count }}
+                        </div>
+                    </li>
+                    <li>
+                        <a href="following">
+                            <div class="n-head">
+                                <a href="following">FOLLOWING</a>
+                            </div>
+                            <div class="n-bottom">
+                                {% following user as total_following %}
+                                <span class="count-following">{{ total_following }}</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="followers">
+                            <div class="n-head">
+                                <a href="followers">FOLLOWERS</a>
+                            </div>
+                            <div class="n-bottom">
+                                {% follower user as total_followers %}
+                                <span class="count-followers">{{ total_followers }}</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <div class="n-head">
+                                LIKES
+                            </div>
+                            <div class="n-bottom">
+                                1
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+                {% if request.user.is_athenticated and request.user == user %}
+                    <div class="edit-button">
+                        <a href="#">
+                            <button class="f-btn follow-btn" data-follow="user_id" data-user="user_id">
+                                <i class="fa fa-user-plus"></i> Edit Profile
+                            </button>
+                        </a>
+                        {#<follow :id="{{ Auth::id() }}" :another="{{ $user->id }}"></follow>#}
+                    </div>
+                {% else %}
+                    <div class="edit-button">
+                        {% is_follow_by_me user request.user as is_liked %}
+
+                        {% if is_liked %}
+                            <form method="post" action="{% url 'twitty:unfollow_user' user.id %}">
+                                {% csrf_token %}
+                                <span>
+                                        <button class="following-btn f-btn" data-follow="user_id" data-user="user_id">
+                                            <i class="fa fa-user-plus"></i> Unfollow
+                                        </button>
+                                    </span>
+                            </form>
+                        {% else %}
+                            {% if request.user != user %}
+                                <form method="post" action="{% url 'twitty:follow_user' user.id %}">
+                                    {% csrf_token %}
+                                    <span>
+                                        <button type="submit" class="follow-btn f-btn" data-follow="user_id"
+                                                data-user="user_id">
+                                            <i class="fa fa-user-plus"></i> Follow
+                                        </button>
+                                    </span>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!---Inner wrapper-->
+    <div class="in-wrapper">
+        <div class="in-full-wrap">
+            <div class="in-left">
+                <div class="in-left-wrap">
+                    <!--PROFILE INFO WRAPPER END-->
+                    <div class="profile-info-wrap">
+                        <div class="profile-info-inner">
+                            <!-- PROFILE-IMAGE -->
+                            <div class="profile-img">
+                                <img src="{{ user.profile_picture.url }}"/>
+                            </div>
+
+                            <div class="profile-name-wrap">
+                                <div class="profile-name">
+                                    <a href="PROFILE-LINK">{{ user.username }}</a>
+                                </div>
+                                <div class="profile-tname">
+                                    @<span class="username">{{ user.username }}</span>
+                                </div>
+                            </div>
+
+                            <div class="profile-bio-wrap">
+                                <div class="profile-bio-inner">
+                                    {{ user.bio }}
+                                </div>
+                            </div>
+
+                            <div class="profile-extra-info">
+                                <div class="profile-extra-inner">
+                                    <ul>
+                                        <li>
+                                            <div class="profile-ex-location-i">
+                                                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                            </div>
+                                            <div class="profile-ex-location">
+                                                {% if user.country.length > 0 %}
+                                                    {{ user.country }}
+                                                {% else %}
+                                                    Not provided
+                                                {% endif %}
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <div class="profile-ex-location-i">
+                                                <i class="fa fa-link" aria-hidden="true"></i>
+                                            </div>
+                                            <div class="profile-ex-location">
+                                                <a href="#">
+                                                    {% if user.website.length > 0 %}
+                                                        {{ user.website }}
+                                                    {% else %}
+                                                        Not provided
+                                                    {% endif %}
+                                                </a>
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <div class="profile-ex-location-i">
+                                                <!-- <i class="fa fa-calendar-o" aria-hidden="true"></i> -->
+                                            </div>
+                                            <div class="profile-ex-location">
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="profile-ex-location-i">
+                                                <!-- <i class="fa fa-tint" aria-hidden="true"></i> -->
+                                            </div>
+                                            <div class="profile-ex-location">
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="profile-extra-footer">
+                                <div class="profile-extra-footer-head">
+                                    <div class="profile-extra-info">
+                                        <ul>
+                                            <li>
+                                                <div class="profile-ex-location-i">
+                                                    <i class="fa fa-camera" aria-hidden="true"></i>
+                                                </div>
+                                                <div class="profile-ex-location">
+                                                    <a href="#">0 Photos and videos </a>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="profile-extra-footer-body">
+                                    <ul>
+                                        <!-- <li><img src="#"/></li> -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!--PROFILE INFO INNER END-->
+                    </div>
+                    <!--PROFILE INFO WRAPPER END-->
+                </div>
+                <!-- in left wrap-->
+            </div>
+            <!-- in left end-->
+
+            <div class="in-center">
+                <div class="in-center-wrap">
+                    <!--Tweet SHOW WRAPER-->
+                    {% if flag == 'tweet' %}
+                        {% for tweet in user.tweet_set.all %}
+                            {% include 'user-tweets.html' with tweet=tweet user=user %}
+                        {% endfor %}
+
+                        {#                    {% elif %}#}
+                    {% endif %}
+
+                    {#                    @if(request()->is('users/*/following'))#}
+                    {#                    @foreach($followings as $following)#}
+                    {#                    <user-following :following="{{ $following }}"></user-following>#}
+                    {#                    @endforeach#}
+                    {#                    @elseif(request()->is('users/*/followers'))#}
+                    {#                    @foreach($followers as $follower)#}
+                    {#                    <user-follower :follower="{{ $follower }}"></user-follower>#}
+                    {#                    @endforeach#}
+                    {#                    @else#}
+                    {#                    <user-tweet :tweets="{{ $user->tweets }}" :user="{{ Auth::user() }}"></user-tweet>#}
+                    {#                    @endif#}
+                    <!--Tweet SHOW WRAPER END-->
+                </div><!-- in left wrap-->
+                <div class="popupTweet"></div>
+            </div>
+            <!-- in center end -->
+
+            <div class="in-right">
+                <div class="in-right-wrap">
+
+                    <!--==WHO TO FOLLOW==-->
+                    <!--who to follow-->
+                    <!--==WHO TO FOLLOW==-->
+
+                    <!--==TRENDS==-->
+                    <!--Trends-->
+                    <!--==TRENDS==-->
+
+                </div><!-- in right wrap-->
+            </div>
+            <!-- in right end -->
+
+        </div>
+        <!--in full wrap end-->
+    </div>
+    <!-- in wrappper ends-->
+
+{% endblock %}
