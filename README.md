@@ -1,15 +1,15 @@
-## Find your valentine partner
+## Simple Twitter Clone
 
-# Preview
+### Screenshots
 
-# Show matches
+## Home page
 <img src="screenshots/one.png" height="500">
 
-# User profile
+## Retweet
 <img src="screenshots/two.png" height="500">
 
-# Who liked you
+## Profile edit
 <img src="screenshots/three.png" height="500">
 
-# Update profile and also update image
+## Change password
 <img src="screenshots/four.png" height="500">
